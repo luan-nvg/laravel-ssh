@@ -1,4 +1,4 @@
-<?php namespace STS\Tunneler;
+<?php namespace MNP\Tunneler;
 
 class Create
 {
