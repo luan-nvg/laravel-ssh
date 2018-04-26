@@ -21,5 +21,5 @@ return [
     'ssh_verbosity' => env('SSH_VERBOSITY',''),
     'ssh_options' => env('TUNNELER_SSH_OPTIONS', ''),
     'nohup_log' => env('NOHUP_LOG', '/dev/null'),
-
+    'db_host' => env('DB_HOST', ''),
 ];

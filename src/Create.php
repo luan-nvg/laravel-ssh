@@ -17,18 +17,17 @@ class Create
 
     public function __construct()
     {
-        // $this->sshCommand = sprintf('%s %s %s -N -i %s -L %d:%s:%d -p %d %s@%s',
-        //     config('tunneler.ssh_path'),
-        //     config('tunneler.ssh_options'),
-        //     config('tunneler.ssh_verbosity'),
-        //     config('tunneler.identity_file'),
-        //     config('tunneler.local_port'),
-        //     config('tunneler.bind_address'),
-        //     config('tunneler.bind_port'),
-        //     config('tunneler.port'),
-        //     config('tunneler.user'),
-        //     config('tunneler.hostname')
-        // );
+        $this->sshCommand = sprintf('%s %s -i %s -L %s:%s:%s -p %s %s@%s',
+            config('tunneler.ssh_path'),
+            config('tunneler.ssh_options'),
+            config('tunneler.identity_file'),
+            config('tunneler.bind_port'),
+            config('tunneler.db_host'),
+            config('tunneler.bind_port'),
+            config('tunneler.port'),
+            config('tunneler.user'),
+            config('tunneler.hostname')
+        );
     }
 
     public function handle(): int
@@ -38,8 +37,8 @@ class Create
             return 2;
         }
 
-        // throw new \ErrorException(sprintf("Could Not Create SSH Tunnel with command:\n\t%s\nCheck your configuration.",
-        //     $this->sshCommand));
+         throw new \ErrorException(sprintf("Could Not Create SSH Tunnel with command:\n\t%s\nCheck your configuration.",
+             $this->sshCommand));
     }
 
     /**
@@ -54,13 +53,12 @@ class Create
      */
     public function run()
     {
-        $com = 'sh rest.sh';
 
         $return_var = 1;
 
-        passthru('x-terminal-emulator -e "' . $com . '" > /dev/null &', $return_var);
+        passthru('x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &', $return_var);
 
-        // throw new \ErrorException($return_var);
+        //throw new \ErrorException( $this->sshCommand);
         sleep(5);
 
         return (bool) ($return_var === 0);
