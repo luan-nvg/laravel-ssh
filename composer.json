@@ -1,0 +1,40 @@
+{
+    "name": "luan-nvg/laravel-ssh",
+    "description": "Easy creation of an SSH Tunnel for Laravel",
+    "type": "library",
+    "require": {
+        "illuminate/support": "^5.2"
+    },
+    "license": "MIT",
+    "keywords": [
+        "ssh",
+        "tunnel",
+        "mysql",
+        "lumen",
+        "laravel"
+    ],
+    "autoload": {
+        "classmap": [
+        ],
+        "psr-4": {
+            "MNP\\Tunneler\\": "src"
+        },
+        "files": [
+        ]
+    },
+    "authors": [
+        {
+            "name": "luan-nvg",
+            "email": "luannnvg@gmail.com"
+        }
+    ],
+    "minimum-stability": "stable",
+    "extra": {
+        "laravel": {
+            "providers": [
+                "MNP\\Tunneler\\TunnelerServiceProvider"
+            ]
+        }
+    },
+    "prefer-stable": true
+}
