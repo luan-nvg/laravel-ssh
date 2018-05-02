@@ -54,13 +54,14 @@ class Create
     public function run()
     {
         $return_var           = 1;
-        $commandCheckOpenDoor = 'lsof -i :'.config('tunneler.local_port');
+        $commandCheckOpenDoor = 'lsof -i :' . config('tunneler.local_port');
         $commandTunneling     = 'x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &';
+        $timer_tunneling      = intval(config('tunneler.timemout_tunnel'));
         $checkPort            = exec($commandCheckOpenDoor);
 
         if (!$checkPort) {
             passthru($commandTunneling, $return_var);
-            sleep(5);
+            sleep($timer_tunneling);
             $checkPort = exec($commandCheckOpenDoor);
         }
 

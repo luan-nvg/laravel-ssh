@@ -11,7 +11,7 @@ We do not support version <=5.1.
 ## Installation
 
 ```
-composer require mariolando/laravel-ssh-tunnel
+composer require luan-nvg/laravel-ssh
 ```
 
 ### Register the Provider:
@@ -72,6 +72,9 @@ TUNNELER_ON_BOOT=false
 ; Do you want to use additional SSH options when the tunnel is created?
 TUNNELER_SSH_OPTIONS="-o StrictHostKeyChecking=no"
 ```
+
+;Delay the compilation to allow time to process the tunneling so that it does not happen at the same time.
+TIMEMOUT_TUNNEL=5
 
 ## Quickstart
 The simplest way to use the Tunneler is to set `TUNNELER_ON_BOOT=true` in your `.env` file. This will ensure the tunnel is in place everytime the framework bootstraps.

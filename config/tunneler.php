@@ -22,4 +22,5 @@ return [
     'ssh_options' => env('TUNNELER_SSH_OPTIONS', ''),
     'nohup_log' => env('NOHUP_LOG', '/dev/null'),
     'db_host' => env('DB_HOST', ''),
+    'timemout_tunnel'=>env('TIMEMOUT_TUNNEL',5)
 ];
