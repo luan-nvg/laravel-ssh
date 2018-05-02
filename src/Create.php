@@ -53,19 +53,18 @@ class Create
      */
     public function run()
     {
-        $return_var = 1;
-        $verif      = 1;
+        $return_var           = 1;
+        $commandCheckOpenDoor = 'sudo netstat -tlpn | grep '.config('tunneler.local_port');
+        $commandTunneling     = 'x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &';
+        $checkPort            = exec($commandCheckOpenDoor);
 
-        $verif = exec('sudo netstat -tlpn | grep 3306');
-
-        if (!$verif) {
-            passthru('x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &', $return_var);
-            //throw new \ErrorException( $this->sshCommand);
+        if (!$checkPort) {
+            passthru($commandTunneling, $return_var);
             sleep(5);
-            $verif = exec('sudo netstat -tlpn | grep 3306');
+            $checkPort = exec($commandCheckOpenDoor);
         }
 
-        return (bool) ($verif == true);
+        return (bool) ($checkPort == true);
     }
 
 }
