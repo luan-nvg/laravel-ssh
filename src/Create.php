@@ -37,8 +37,8 @@ class Create
             return 2;
         }
 
-         throw new \ErrorException(sprintf("Could Not Create SSH Tunnel with command:\n\t%s\nCheck your configuration.",
-             $this->sshCommand));
+        throw new \ErrorException(sprintf("Could Not Create SSH Tunnel with command:\n\t%s\nCheck your configuration.",
+            $this->sshCommand));
     }
 
     /**
@@ -53,15 +53,19 @@ class Create
      */
     public function run()
     {
-
         $return_var = 1;
+        $verif      = 1;
 
-        passthru('x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &', $return_var);
+        $verif = exec('sudo netstat -tlpn | grep 3306');
 
-        //throw new \ErrorException( $this->sshCommand);
-        sleep(5);
+        if (!$verif) {
+            passthru('x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &', $return_var);
+            //throw new \ErrorException( $this->sshCommand);
+            sleep(5);
+            $verif = exec('sudo netstat -tlpn | grep 3306');
+        }
 
-        return (bool) ($return_var === 0);
+        return (bool) ($verif == true);
     }
 
 }
