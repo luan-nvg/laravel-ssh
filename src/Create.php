@@ -58,11 +58,25 @@ class Create
         $commandTunneling     = 'x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &';
         $timer_tunneling      = intval(config('tunneler.timemout_tunnel'));
         $checkPort            = exec($commandCheckOpenDoor);
+        $commandClosePort     = 'kill $(lsof -t -i:' . config('tunneler.local_port') . ')';
 
         if (!$checkPort) {
             passthru($commandTunneling, $return_var);
             sleep($timer_tunneling);
             $checkPort = exec($commandCheckOpenDoor);
+        } else {
+            //LISTEN
+            //CLOSE_WAIT
+            $checkPortStatus = strpos(collect($checkPort)->first(), '(CLOSE_WAIT)');
+
+            if ($checkPortStatus) {
+                echo 'Door closed, establishing new connection..';
+                exec($commandClosePort);
+                $this->run();
+            } else {
+                echo 'tunneling: The ' . config('tunneler.timemout_tunnel') . ' port is already being used, if it does not work check if it is already being used by another program.';
+            }
+
         }
 
         return (bool) ($checkPort == true);
