@@ -54,7 +54,7 @@ class Create
     public function run()
     {
         $return_var           = 1;
-        $commandCheckOpenDoor = 'netstat -tlpn | grep '.config('tunneler.local_port');
+        $commandCheckOpenDoor = 'lsof -i :'.config('tunneler.local_port');
         $commandTunneling     = 'x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &';
         $checkPort            = exec($commandCheckOpenDoor);
 
