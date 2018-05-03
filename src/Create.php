@@ -1,4 +1,7 @@
-<?php namespace MNP\Tunneler;
+<?php 
+namespace MNP\Tunneler;
+
+use Illuminate\Console\Command;
 
 class Create
 {
@@ -55,31 +58,42 @@ class Create
     {
         $return_var           = 1;
         $commandCheckOpenDoor = 'lsof -i :' . config('tunneler.local_port');
-        $commandTunneling     = 'x-terminal-emulator -e "' . $this->sshCommand . '" > /dev/null &';
         $timer_tunneling      = intval(config('tunneler.timemout_tunnel'));
         $checkPort            = exec($commandCheckOpenDoor);
         $commandClosePort     = 'kill $(lsof -t -i:' . config('tunneler.local_port') . ')';
 
         if (!$checkPort) {
-            passthru($commandTunneling, $return_var);
-            sleep($timer_tunneling);
-            $checkPort = exec($commandCheckOpenDoor);
+            passthru($this->commandTunneling(), $return_var);
+            // sleep($timer_tunneling);
+            echo 'Conecting SSH tunnel...';
+            while (!$checkPort){
+                echo '.';
+                $checkPort = exec($commandCheckOpenDoor);
+            }
+            echo PHP_EOL;
+            echo 'SSH tunnel are connected, you can close the extra terminal'.PHP_EOL;
+
         } else {
             //LISTEN
             //CLOSE_WAIT
             $checkPortStatus = strpos(collect($checkPort)->first(), '(CLOSE_WAIT)');
 
             if ($checkPortStatus) {
-                echo 'Door closed, establishing new connection..';
+                echo 'Door closed, establishing new connection...';
                 exec($commandClosePort);
                 $this->run();
             } else {
-                echo 'tunneling: The ' . config('tunneler.timemout_tunnel') . ' port is already being used, if it does not work check if it is already being used by another program.';
+                echo 'tunneling: The ' . config('tunneler.local_port') . ' port is already being used, if it does not work check if it is already being used by another program.';
             }
 
         }
 
         return (bool) ($checkPort == true);
+    }
+
+    private function commandTunneling()
+    {
+       return 'x-terminal-emulator -e "' . $this->sshCommand .'" > /dev/null &';
     }
 
 }
